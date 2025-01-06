@@ -3,7 +3,7 @@ import { NestedStack, NestedStackProps, Stack } from 'aws-cdk-lib';
 import { EnvironmentContext } from '../../../src/utils/validate-environment-context';
 import { GatewayFirewall } from '../../constructs/waf/gateway-firewall';
 import { ImportedResourcesStack } from './imported-resources-stack';
-import { AccessLogFormat, FirehoseLogDestination, IntegrationResponse, RequestValidator, RestApi, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import { AccessLogFormat, FirehoseLogDestination, IntegrationResponse, RequestValidator, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { CfnWebACLAssociation } from 'aws-cdk-lib/aws-wafv2';
 import { CfnDeliveryStream } from 'aws-cdk-lib/aws-kinesisfirehose';
 import { LogDeliveryRole } from '../../constructs/iam/log-delivery-role';
@@ -84,6 +84,44 @@ export class GatewayStack extends NestedStack {
       defaultIntegrationResponses: defaultIntegrationResponses,
       requestValidator: requestValidator,
     });
+
+    // gateway.root.addMethod('OPTIONS', new MockIntegration({
+    //   requestTemplates: {
+    //     'application/json': '{"statusCode": 200}',
+    //   },
+    //   integrationResponses: [{
+    //     statusCode: '200',
+    //     responseParameters: {
+    //       'method.response.header.Access-Control-Allow-Headers': "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token'",
+    //       'method.response.header.Access-Control-Allow-Origin': "'*'", // Allow any origin or customize as needed
+    //       'method.response.header.Access-Control-Allow-Methods': "'OPTIONS, POST, GET, PUT, DELETE'", // Allow all common HTTP methods
+    //     },
+    //   }],
+    // }));
+    
+    // // Add CORS response headers to all methods on the root resource
+    // gateway.root.addMethod('GET', new LambdaIntegration(helloLambda), {
+    //   methodResponses: [{
+    //     statusCode: '200',
+    //     responseParameters: {
+    //       'method.response.header.Access-Control-Allow-Origin': true,
+    //       'method.response.header.Access-Control-Allow-Methods': true,
+    //       'method.response.header.Access-Control-Allow-Headers': true,
+    //     },
+    //   }],
+    // });
+    
+    // gateway.root.addMethod('POST', new LambdaIntegration(helloLambda), {
+    //   methodResponses: [{
+    //     statusCode: '200',
+    //     responseParameters: {
+    //       'method.response.header.Access-Control-Allow-Origin': true,
+    //       'method.response.header.Access-Control-Allow-Methods': true,
+    //       'method.response.header.Access-Control-Allow-Headers': true,
+    //     },
+    //   }],
+    // });
+    
 
     // Add a simple "Hello" route
     // const helloLambda = new Function(this, 'HelloLambda', {
