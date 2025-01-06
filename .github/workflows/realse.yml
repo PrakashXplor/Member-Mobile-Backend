@@ -1,0 +1,39 @@
+name: Create Release Tag
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-release-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get pull request title
+        id: pr
+        run: |
+          PR_TITLE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/pulls?state=closed \
+          | jq -r '.[] | select(.merge_commit_sha == "${{ github.sha }}") | .title')
+          echo "::set-output name=title::$PR_TITLE"
+
+      - name: Check if PR title contains 'feat' or 'chore'
+        id: check-title
+        run: |
+          if [[ "${{ steps.pr.outputs.title }}" == *"feat"* || "${{ steps.pr.outputs.title }}" == *"chore"* ] || [ "${{ steps.pr.outputs.title }}" == *"fix"*]; then
+            echo "Title contains 'feat' or 'chore' or 'fix'"
+            echo "::set-output name=should_tag::true"
+          else
+            echo "Title does not contain 'feat' or 'chore' or 'fix'"
+            echo "::set-output name=should_tag::false"
+          fi
+
+      - name: Create release tag
+        if: steps.check-title.outputs.should_tag == 'true'
+        run: |
+          TAG_NAME="release-$(date +'%Y%m%d%H%M%S')"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME

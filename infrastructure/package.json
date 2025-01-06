@@ -1,0 +1,31 @@
+{
+  "name": "infrastructure",
+  "version": "0.1.0",
+  "private": true, 
+  "bin": {
+    "infrastructrue": "bin/infrastructrue.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "bootstrap": "cdklocal bootstrap",
+    "deploy": "cdk deploy  --require-approval never",
+    "local-bootstrap": "cdklocal bootstrap",
+    "local-deploy": "cdklocal deploy  --require-approval never"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.7.9",
+    "aws-cdk": "2.173.4",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.6.3"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.173.4",
+    "constructs": "^10.0.0",
+    "dotenv": "^16.4.7"
+  }
+}

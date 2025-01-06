@@ -1,0 +1,303 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`poc CDK Snapshot Tests Snapshot test for root Mobile Gateway Stack in the CDK application matches: MobileGatewayStack-poc 1`] = `
+{
+  "Description": "Contains infrastructure for the mobile application API gateway POC",
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "ImportedResourcesStackNestedStackImportedResourcesStackNestedStackResource18717A3C": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "",
+            [
+              "https://s3.eu-west-1.",
+              {
+                "Ref": "AWS::URLSuffix",
+              },
+              "/cdk-hnb659fds-assets-816257223367-eu-west-1/HASH.json",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "QueueStackNestedStackQueueStackNestedStackResource36C7EFEC": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "",
+            [
+              "https://s3.eu-west-1.",
+              {
+                "Ref": "AWS::URLSuffix",
+              },
+              "/cdk-hnb659fds-assets-816257223367-eu-west-1/HASH.json",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`poc CDK Snapshot Tests Snapshot test for the Imported Resources Stack in the CDK application matches: MobileGatewayStack-ImportedResourcesStack-poc 1`] = `
+{
+  "Description": "Contains imported AWS resources for the mobile gateway POC",
+}
+`;
+
+exports[`poc CDK Snapshot Tests Snapshot test for the Queues Stack in the CDK application matches: MobileGatewayStack-GatewayStack-poc 1`] = `
+{
+  "Description": "Contains SQS queues / persistent queuing infrastructure",
+  "Resources": {
+    "FirewallDeliveryRole63A14535": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "RoleName": "MobileGatewayWaf-eu-west-1-KinesisLogDeliveryRole",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FirewallDeliveryRolePolicy5D398AEE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:AbortMultipartUpload",
+                "s3:ListBucketMultipartUploads",
+                "s3:ListBucket",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::logshipperstack-logbucket7273c8db-hbpx4euqdao6",
+                "arn:aws:s3:::logshipperstack-logbucket7273c8db-hbpx4euqdao6/AWSLogs/816257223367/WAF/*",
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FirewallDeliveryRolePolicy5D398AEE",
+        "Roles": [
+          {
+            "Ref": "FirewallDeliveryRole63A14535",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FirewallLogStream5552A36B": {
+      "Properties": {
+        "DeliveryStreamName": "aws-waf-logs-mobile-gateway-api",
+        "ExtendedS3DestinationConfiguration": {
+          "BucketARN": "arn:aws:s3:::logshipperstack-logbucket7273c8db-hbpx4euqdao6",
+          "BufferingHints": {
+            "IntervalInSeconds": 120,
+            "SizeInMBs": 5,
+          },
+          "CompressionFormat": "GZIP",
+          "ErrorOutputPrefix": "AWSLogs/816257223367/WAF/eu-west-1/error",
+          "Prefix": "AWSLogs/816257223367/WAF/eu-west-1/",
+          "RoleARN": {
+            "Fn::GetAtt": [
+              "FirewallDeliveryRole63A14535",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::KinesisFirehose::DeliveryStream",
+    },
+    "FirewallLoggingConfiguration668312E3": {
+      "Properties": {
+        "LogDestinationConfigs": [
+          {
+            "Fn::GetAtt": [
+              "FirewallLogStream5552A36B",
+              "Arn",
+            ],
+          },
+        ],
+        "RedactedFields": [
+          {
+            "SingleHeader": {
+              "Name": "Authorization",
+            },
+          },
+        ],
+        "ResourceArn": {
+          "Fn::GetAtt": [
+            "FirewallWafBAC74315",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::WAFv2::LoggingConfiguration",
+    },
+    "FirewallWafBAC74315": {
+      "Properties": {
+        "DefaultAction": {
+          "Allow": {},
+        },
+        "Description": "Mobile Gateway WAF",
+        "Rules": [
+          {
+            "Name": "AWS-AWSManagedRulesAmazonIpReputationList",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 0,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "Name": "AWSManagedRulesAmazonIpReputationList",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": false,
+              "MetricName": "AWS-AWSManagedRulesAmazonIpReputationList",
+              "SampledRequestsEnabled": false,
+            },
+          },
+          {
+            "Name": "AWS-AWSManagedRulesCommonRuleSet",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 1,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "Name": "AWSManagedRulesCommonRuleSet",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": false,
+              "MetricName": "AWS-AWSManagedRulesCommonRuleSet",
+              "SampledRequestsEnabled": false,
+            },
+          },
+          {
+            "Name": "AWS-AWSManagedRulesKnownBadInputsRuleSet",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 2,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "Name": "AWSManagedRulesKnownBadInputsRuleSet",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": false,
+              "MetricName": "AWS-AWSManagedRulesKnownBadInputsRuleSet",
+              "SampledRequestsEnabled": false,
+            },
+          },
+          {
+            "Action": {
+              "Block": {},
+            },
+            "Name": "General-RateBasedRule",
+            "Priority": 3,
+            "Statement": {
+              "RateBasedStatement": {
+                "AggregateKeyType": "IP",
+                "Limit": 100,
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": false,
+              "MetricName": "General-RateBasedRule",
+              "SampledRequestsEnabled": false,
+            },
+          },
+        ],
+        "Scope": "REGIONAL",
+        "VisibilityConfig": {
+          "CloudWatchMetricsEnabled": false,
+          "MetricName": "WAF-MobileGateway-API",
+          "SampledRequestsEnabled": false,
+        },
+      },
+      "Type": "AWS::WAFv2::WebACL",
+    },
+  },
+}
+`;
+
+exports[`poc Environment Context Tests Environment context matches snapshot: EnvironmentContext-poc 1`] = `
+{
+  "api": {
+    "domain": "api.dev.eu.membr.com",
+  },
+  "aws": {
+    "account": {
+      "id": "816257223367",
+      "region": "eu-west-1",
+    },
+  },
+  "buildNumber": "1",
+  "logging": {
+    "account": "542626654496",
+    "bucketArn": "arn:aws:s3:::platform-logshipperstack-centrallogbucket37f63cae-1q0fehe38cged",
+    "bucketName": "platform-logshipperstack-centrallogbucket37f63cae-1q0fehe38cged",
+    "region": "eu-west-1",
+  },
+}
+`;

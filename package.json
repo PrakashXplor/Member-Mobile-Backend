@@ -1,0 +1,54 @@
+{
+  "name": "Mark3",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/PrakashXplor/Member-Mobile-Backend.git",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "infrastructure"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "test": "echo 'No tests specified' && exit 0",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "tsc && yarn workspace infrastructure build",
+    "deploy:dev": "yarn workspace infrastructure bootstrap && yarn workspace infrastructure deploy --context stage dev",
+    "deploy:stage": "yarn workspace infrastructure bootstrap && yarn workspace infrastructure deploy --context stage stage",
+    "deploy:prod": "yarn workspace infrastructure bootstrap && yarn workspace infrastructure deploy --context stage prod",
+    "start-localstack": "docker-compose up -d",
+    "deploy:localstack": "yarn start-localstack && yarn workspace infrastructure local-bootstrap && yarn workspace infrastructure local-deploy"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@eslint/js": "^9.5.0",
+    "@types/jest": "^29",
+    "@types/node": "^20",
+    "@typescript-eslint/eslint-plugin": "^8.19.0",
+    "@typescript-eslint/parser": "^8.19.0",
+    "aws-lambda": "^1.0.7",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jest": "^28.6.0",
+    "eslint-plugin-monorepo": "^0.3.2",
+    "eslint-plugin-prettier": "^5.1.3",
+    "globals": "^15.6.0",
+    "husky": "^9.1.7",
+    "jest": "^29",
+    "jest-junit": "^16.x",
+    "prettier": "^3.4.2",
+    "ts-jest": "^29.1.5",
+    "tsconfig-paths-jest": "^0.x",
+    "typescript": "^5.4.0",
+    "typescript-eslint": "^7.13.1"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.173.4",
+    "constructs": "^10.4.2",
+    "zod": "^3.24.1"
+  }
+}
