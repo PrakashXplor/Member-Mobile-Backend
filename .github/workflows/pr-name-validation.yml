@@ -1,0 +1,40 @@
+name: PR Name Validation & Unit Tests
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+    branches:
+      - '**'  # Trigger for all branches, modify as needed
+
+jobs:
+  validate-pr-name-and-run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: yarn install  # Or npm install
+
+      # Step 4: Check PR title
+      - name: Validate PR title
+        run: |
+          PR_TITLE=$(jq --raw-output .pull_request.title $GITHUB_EVENT_PATH)
+          echo "PR Title: $PR_TITLE"
+          if [[ ! "$PR_TITLE" =~ ^(fix|feat|docs|refactor|chor|test|revert): ]]; then
+            echo "Error: PR title must start with 'fix:','feat:','docs:', 'refactor:'"
+            exit 1
+          fi
+
+      # Step 5: Run Unit Tests
+      - name: Run Unit Tests
+        run: yarn test  # Modify this as per your test command (e.g., jest, mocha)

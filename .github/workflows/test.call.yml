@@ -1,0 +1,23 @@
+# name: Integration/E2E Tests
+
+# on:
+#   workflow_call:  # This will allow this workflow to be called from other workflows
+
+# jobs:
+#   integration-test:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 16
+
+#       - name: Install dependencies
+#         run: yarn install
+
+#       - name: Run Integration Tests
+#         run: yarn integration-test  # Replace with your integration test command

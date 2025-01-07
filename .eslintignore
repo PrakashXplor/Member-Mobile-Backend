@@ -1,0 +1,31 @@
+# Ignore node_modules and build directories
+node_modules/
+dist/
+build/
+
+# Ignore specific configuration or temporary files
+*.config.js
+*.config.cjs
+*.config.mjs
+*.config.ts
+*.config.json
+.env
+
+# Ignore log files and temporary files
+*.log
+*.tmp
+*.cache
+
+# Ignore coverage reports
+coverage/
+
+# Ignore TypeScript declaration files (if unnecessary to lint)
+*.d.ts
+
+# Ignore compiled JavaScript files
+*.js
+*.mjs
+*.cjs
+
+# Ignore test snapshots (if applicable)
+__snapshots__/
