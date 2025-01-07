@@ -7,10 +7,12 @@ services:
       - AWS_DEFAULT_REGION=us-east-1
       - DEBUG=1
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
     ports:
       - "4566:4566"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - ./src/script/logging-bucket.sh:/usr/src/app/logging-bucket.sh
-      - ./init.sh:/usr/src/app/init.sh
-    # entrypoint: ["/bin/sh", "-c", "/usr/src/app/init.sh"]
+      - "/var/run/docker.sock:/var/run/docker.sock"  # Mount Docker socket
+      - "./src/scripts/create_s3_bucket.sh:/etc/localstack/create_s3_bucket.sh"  # Mount the script directly
+      - "./src/scripts/create_s3_bucket.sh:/etc/localstack/init/ready.d/create_s3_bucket.sh"  # Mount the script for initialization
+
